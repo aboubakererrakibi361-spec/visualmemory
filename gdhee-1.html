@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الذاكرة البصرية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+<style type="text/css" id="dcoder_stylesheet">/* تنسيقات عامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    overflow: hidden;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M50 0 L100 50 L50 100 L0 50 Z"></path></svg>');
+    background-size: 30px 30px;
+    z-index: -1;
+    animation: moveBackground 60s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 1000px 1000px;
+    }
+}
+
+.game-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.score, .timer {
+    font-size: 1.2rem;
+    color: #34495e;
+    font-weight: bold;
+}
+
+#start-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+#start-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    height: 100px;
+    background-color: #3498db;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(180deg);
+}
+
+.card::before {
+    content: "؟";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #2c3e50;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: white;
+    transform: rotateY(0deg);
+}
+
+.card.flipped {
+    transform: rotateY(0deg);
+}
+
+.card.matched {
+    background-color: #2ecc71;
+    cursor: default;
+}
+
+.message {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    min-height: 30px;
+    color: #e74c3c;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 600px) {
+    .game-board {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .card {
+        height: 80px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .game-board {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .game-info {
+        flex-direction: column;
+    }
+}</style></head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="game-container">
+        <h1>لعبة الذاكرة البصرية</h1>
+        
+        <div class="game-info">
+            <div class="score">النقاط: <span id="score">0</span></div>
+            <div class="timer">الوقت: <span id="time">60</span> ثانية</div>
+            <button id="start-btn">بدء اللعبة</button>
+        </div>
+        
+        <div class="game-board" id="game-board"></div>
+        
+        <div class="message" id="message"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+<script type="text/javascript" id="dcoder_script">document.addEventListener('DOMContentLoaded', () => {
+    // عناصر DOM
+    const gameBoard = document.getElementById('game-board');
+    const startBtn = document.getElementById('start-btn');
+    const scoreElement = document.getElementById('score');
+    const timeElement = document.getElementById('time');
+    const messageElement = document.getElementById('message');
+    
+    // متغيرات اللعبة
+    let cards = [];
+    let flippedCards = [];
+    let matchedCards = [];
+    let score = 0;
+    let timeLeft = 60;
+    let timer;
+    let gameStarted = false;
+    
+    // رموز الأيقونات للبطاقات
+    const icons = [
+        '🍎', '🍌', '🍒', '🍓', '🍊', '🍋', '🍐', '🍉',
+        '🍇', '🍍', '🥝', '🥥', '🥭', '🍑', '🍈', '🍏'
+    ];
+    
+    // تهيئة اللعبة
+    function initGame() {
+        // إعادة تعيين المتغيرات
+        cards = [];
+        flippedCards = [];
+        matchedCards = [];
+        score = 0;
+        timeLeft = 60;
+        gameStarted = false;
+        
+        // تحديث واجهة المستخدم
+        scoreElement.textContent = score;
+        timeElement.textContent = timeLeft;
+        messageElement.textContent = '';
+        gameBoard.innerHTML = '';
+        
+        // إنشاء بطاقات مزدوجة
+        const gameIcons = [...icons.slice(0, 8), ...icons.slice(0, 8)];
+        
+        // خلط البطاقات
+        shuffleArray(gameIcons);
+        
+        // إنشاء عناصر البطاقات
+        gameIcons.forEach((icon, index) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.index = index;
+            card.dataset.icon = icon;
+            card.innerHTML = icon;
+            card.addEventListener('click', flipCard);
+            cards.push(card);
+            gameBoard.appendChild(card);
+        });
+    }
+    
+    // بدء اللعبة
+    startBtn.addEventListener('click', () => {
+        if (!gameStarted) {
+            gameStarted = true;
+            startTimer();
+            messageElement.textContent = 'ابدأ اللعب!';
+            messageElement.style.color = '#2ecc71';
+        }
+    });
+    
+    // قلب البطاقة
+    function flipCard() {
+        if (!gameStarted) {
+            messageElement.textContent = 'يجب الضغط على زر "بدء اللعبة" أولاً';
+            messageElement.style.color = '#e74c3c';
+            return;
+        }
+        
+        const selectedCard = this;
+        
+        // لا تفعل شيئا إذا كانت البطاقة مقلوبة بالفعل أو مطابقة
+        if (flippedCards.length < 2 && !flippedCards.includes(selectedCard) && !matchedCards.includes(selectedCard)) {
+            selectedCard.classList.add('flipped');
+            flippedCards.push(selectedCard);
+            
+            // إذا تم قلب بطاقتين، تحقق من التطابق
+            if (flippedCards.length === 2) {
+                checkForMatch();
+            }
+        }
+    }
+    
+    // التحقق من تطابق البطاقات
+    function checkForMatch() {
+        const [card1, card2] = flippedCards;
+        
+        if (card1.dataset.icon === card2.dataset.icon) {
+            // تطابق ناجح
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            matchedCards.push(card1, card2);
+            flippedCards = [];
+            
+            // زيادة النقاط
+            score += 10;
+            scoreElement.textContent = score;
+            
+            // رسالة نجاح
+            messageElement.textContent = 'تهانينا! تطابق ناجح';
+            messageElement.style.color = '#2ecc71';
+            
+            // التحقق من فوز اللاعب
+            if (matchedCards.length === cards.length) {
+                endGame(true);
+            }
+        } else {
+            // تطابق فاشل
+            messageElement.textContent = 'لا يوجد تطابق، حاول مرة أخرى';
+            messageElement.style.color = '#e74c3c';
+            
+            // إعادة البطاقات بعد تأخير
+            setTimeout(() => {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                flippedCards = [];
+            }, 1000);
+        }
+    }
+    
+    // مؤقت اللعبة
+    function startTimer() {
+        timer = setInterval(() => {
+            timeLeft--;
+            timeElement.textContent = timeLeft;
+            
+            if (timeLeft <= 10) {
+                timeElement.style.color = '#e74c3c';
+            }
+            
+            if (timeLeft <= 0) {
+                endGame(false);
+            }
+        }, 1000);
+    }
+    
+    // إنهاء اللعبة
+    function endGame(isWin) {
+        clearInterval(timer);
+        gameStarted = false;
+        
+        if (isWin) {
+            messageElement.textContent = `تهانينا! لقد فزت بنقاط ${score}`;
+            messageElement.style.color = '#2ecc71';
+        } else {
+            messageElement.textContent = `انتهى الوقت! نقاطك النهائية: ${score}`;
+            messageElement.style.color = '#e74c3c';
+        }
+        
+        // تعطيل النقر على البطاقات
+        cards.forEach(card => {
+            card.removeEventListener('click', flipCard);
+        });
+    }
+    
+    // دالة لخلط المصفوفة
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+    
+    // تهيئة اللعبة عند تحميل الصفحة
+    initGame();
+});</script></body></html>
